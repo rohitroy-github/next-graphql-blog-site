@@ -5,23 +5,18 @@ import Head from "next/head";
 // importing custom components
 import {PostCard, PostWidget, Categories} from "../components";
 
+import {getPosts} from "../services";
 // demo post
-const posts = [{title: "React", excerpt: "Learn React"}];
+// const posts = [{title: "React", excerpt: "Learn React"}];
 
-const Home = () => {
+export default function Home({posts}) {
   return (
     <div className="container mx-auto px-10 mb-8">
-      <Head>
-        <title>Blog Site</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
+      {/* <FeaturedPosts /> */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-8 col-span-1">
           {posts.map((post, index) => (
-            <div>
-              <PostCard post={post} key={post.title} />
-            </div>
+            <PostCard key={index} post={post.node} />
           ))}
         </div>
         <div className="lg:col-span-4 col-span-1">
@@ -33,6 +28,15 @@ const Home = () => {
       </div>
     </div>
   );
-};
+}
 
-export default Home;
+// Fetch data at build time
+export async function getStaticProps() {
+  const posts = (await getPosts()) || [];
+
+  // passing { posts } as props into Home to display
+
+  return {
+    props: {posts},
+  };
+}
